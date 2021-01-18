@@ -1,0 +1,1 @@
+export const MINUTE_TO_PIXEL = 1;
