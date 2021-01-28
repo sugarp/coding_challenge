@@ -20,12 +20,11 @@ export function getRandomEvent(lastEnd: Date) {
   }
 }
 
-
 export function generateEvents(): TimeEvent[] {
   const initialStart = roundDate(new Date()).toISOString();
   const ar: TimeEvent[] = [];
 
-  for(let i = 0; i < 1000; i++) {
+  for(let i = 0; i < 400; i++) {
     const last = ar[ar.length - 1]
     const start = last ? last.end : initialStart;
 

@@ -1,31 +1,40 @@
-import React, { useMemo } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useMemo } from 'react';
 import { generateEvents } from './generator';
-import styled from 'styled-components';
 import Event from './components/Event'
+import Timeline from './components/TimeLine';
+import { withEventsProvider } from './contexts/EventsContext/EventsContextProvider';
+import { withSelectedTimeContextProvider } from './contexts/SelectedTimeContext/SelectedTimeContextProvider';
+import SelectedTime from './components/SelectedTime/SelectedTime';
+import { DateTime } from 'luxon';
+import EventsContext from './contexts/EventsContext/EventsContext';
+import ControlBar from './components/ControlBar/ControlBar';
+import styled from 'styled-components';
 
-const Timeline = styled.div`
-  position: relative;
+const Root = styled.div`
+  padding: 2rem;
+`;
+
+const StyledControlBar = styled(ControlBar)`
+  margin: 2rem 0;
 `;
 
 function App() {
-  const events = useMemo(() => generateEvents(), []);
-  const timeLineStart = useMemo(() => new Date(), []);
+  const { events } = useContext(EventsContext);
+  const timeLineStart = useMemo(() => DateTime.local().set({ minute: 0, hour: 0, second: 0, millisecond: 0 }), []);
 
   return (
-    <div className="App">
-      <body>
-        <Timeline>
-          {
-            events.map(item => (
-              <Event item={item} timeLineStart={timeLineStart}/>
-            ))
-          }
-        </Timeline>
-      </body>
-    </div>
+    <Root className="App">
+      <StyledControlBar timeLineStart={timeLineStart}/>
+      <Timeline timeLineStart={timeLineStart}>
+        <SelectedTime timeLineStart={timeLineStart} />
+        {
+          events.map(item => (
+            <Event item={item} timeLineStart={timeLineStart}/>
+          ))
+        }
+      </Timeline>
+    </Root>
   );
 }
 
-export default App;
+export default withSelectedTimeContextProvider(withEventsProvider(App));
