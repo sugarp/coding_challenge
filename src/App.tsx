@@ -7,31 +7,33 @@ import { withSelectedTimeContextProvider } from './contexts/SelectedTimeContext/
 import SelectedTime from './components/SelectedTime/SelectedTime';
 import { DateTime } from 'luxon';
 import EventsContext from './contexts/EventsContext/EventsContext';
-import ControlBar from './components/ControlBar/ControlBar';
+import ControlsBar from './components/ControlsBar/ControlsBar';
 import styled from 'styled-components';
+import Loader from './components/Loader';
 
 const Root = styled.div`
   padding: 2rem;
 `;
 
-const StyledControlBar = styled(ControlBar)`
+const StyledControlBar = styled(ControlsBar)`
   margin: 2rem 0;
 `;
 
 function App() {
-  const { events } = useContext(EventsContext);
+  const { events, loading } = useContext(EventsContext);
   const timeLineStart = useMemo(() => DateTime.local().set({ minute: 0, hour: 0, second: 0, millisecond: 0 }), []);
 
   return (
     <Root className="App">
-      <StyledControlBar timeLineStart={timeLineStart}/>
-      <Timeline timeLineStart={timeLineStart}>
+      <StyledControlBar timeLineStart={timeLineStart}/>      
+      <Timeline timeLineStart={timeLineStart}>        
+        <Loader loading={loading} />
         <SelectedTime timeLineStart={timeLineStart} />
         {
           events.map(item => (
-            <Event item={item} timeLineStart={timeLineStart}/>
+            <Event key={item.id} item={item} timeLineStart={timeLineStart}/>
           ))
-        }
+        }      
       </Timeline>
     </Root>
   );

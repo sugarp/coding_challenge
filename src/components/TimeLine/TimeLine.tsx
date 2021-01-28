@@ -1,11 +1,12 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import EventsContext from '../../contexts/EventsContext/EventsContext';
-import calculateWidth from './utils/calculateWidth';
+import calculateWidth from '../../generator/utils/calculateWidth';
 import { last, first } from 'lodash';
 import SelectedTimeContext from '../../contexts/SelectedTimeContext';
 import { DateTime } from 'luxon';
-import { MINUTE_TO_PIXEL } from '../../constants';
+import { MINUTE_TO_PIXEL_RATIO } from '../../constants';
+import calculateNewInterval from './utils';
 
 interface RootProps {
   width: number;
@@ -31,22 +32,18 @@ interface TimeLineProps {
 const TimeLine: React.FC<TimeLineProps> = ({ children, timeLineStart }) => {
   const { events } = useContext(EventsContext);
   const selectedTime = useContext(SelectedTimeContext);
-  const width = calculateWidth(timeLineStart.toJSDate(), new Date(last(events)?.end ?? ""));
+  const width = calculateWidth(timeLineStart, DateTime.fromISO(last(events)?.end ?? ""));
   const contentRef = useRef<HTMLDivElement| null>(null);
-  const rootRef = useRef<HTMLDivElement| null>(null);
 
   const onClick = useCallback((e: React.MouseEvent) => {
-    const originalDuration = selectedTime.end.diff(selectedTime.start).as("minutes");
-    const timeLineScreenOffset = contentRef.current!.getBoundingClientRect().left;
-    const clickTimeLineCoordinate = e.clientX - timeLineScreenOffset;
-    const newStart = timeLineStart.plus({ minutes: clickTimeLineCoordinate / MINUTE_TO_PIXEL });
+    const { start, end } = calculateNewInterval(timeLineStart, selectedTime.start, selectedTime.end, contentRef.current!, e.clientX);
 
-    selectedTime.setStart(newStart);
-    selectedTime.setEnd(newStart.plus({ minutes: originalDuration }))
-  }, [])
+    selectedTime.setStart(start);
+    selectedTime.setEnd(end);
+  }, [selectedTime])
 
   return (
-    <Root ref={rootRef}>
+    <Root>
       <Content ref={contentRef} width={width} onClick={onClick}>{children}</Content>
     </Root>
   )

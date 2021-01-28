@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import { DateTime } from 'luxon';
 import React, { HTMLAttributes, useCallback, useContext } from 'react'
 import styled from 'styled-components';
-import useControlBar from './hooks/useControlBar';
+import useControlsBar from './hooks/useControlBar';
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 import { isEmpty } from 'lodash';
@@ -48,8 +48,8 @@ interface ControlBarProps extends HTMLAttributes<HTMLDivElement> {
   timeLineStart: DateTime;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ timeLineStart, ...props }) => {
-  const { start, end, nameFilterOptions, nameFilterValue, onEndChange, onFilterChange, onStartChange } = useControlBar(timeLineStart);
+const ControlsBar: React.FC<ControlBarProps> = ({ timeLineStart, ...props }) => {
+  const { start, end, nameFilterOptions, nameFilterValue, onEndChange, onFilterChange, onStartChange } = useControlsBar();
 
   return (
     <Root {...props}>
@@ -79,9 +79,17 @@ const ControlBar: React.FC<ControlBarProps> = ({ timeLineStart, ...props }) => {
         </Select>
       </StyledOrganizerField>
       
-      { !isEmpty(nameFilterValue) ? <StyledResetButton variant="contained" color={"primary"} onClick={() => onFilterChange(null)}>Delete filter</StyledResetButton> : null}
+      { !isEmpty(nameFilterValue) ? (
+        <StyledResetButton 
+          variant="contained" 
+          color={"primary"} 
+          onClick={() => onFilterChange(null)}
+        >
+          Delete filter
+        </StyledResetButton>
+      ) : null}
     </Root>
   )
 }
 
-export default ControlBar
+export default ControlsBar

@@ -2,6 +2,7 @@
   "name": "coding_challenge",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ueni-ltd.github.io/ueni_challenge/",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/pickers": "^3.2.10",

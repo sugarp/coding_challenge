@@ -1,8 +1,9 @@
 import { DateTime } from "luxon";
 import styled from "styled-components"
-import { MINUTE_TO_PIXEL as MINUTE_TO_PIXEL_RATIO } from "../constants";
+import { MINUTE_TO_PIXEL_RATIO as MINUTE_TO_PIXEL_RATIO } from "../constants";
+import { msToMin } from "../generator/utils/time";
 import { TimeEvent } from "../types/TimeEvent";
-import { msToMin } from "../utils";
+import { calculateLeftValue, calculateWidthValue } from "../utils";
 
 interface Props {
   timeLineStart: DateTime;
@@ -26,8 +27,8 @@ const Root = styled.div<{ left: number, width: number }>`
 const Event: React.FC<Props> = ({ timeLineStart, item }) => {
   const { start, end, name } = item;
 
-  const left = msToMin(new Date((start)).getTime() - timeLineStart.toMillis()) * MINUTE_TO_PIXEL_RATIO;
-  const width = msToMin(new Date(end).getTime() - new Date(start).getTime()) * MINUTE_TO_PIXEL_RATIO;
+  const left = calculateLeftValue(timeLineStart, DateTime.fromISO(start))
+  const width = calculateWidthValue(DateTime.fromISO(start), DateTime.fromISO(end))
 
   return (
     <Root left={left} width={width}>{name}</Root>

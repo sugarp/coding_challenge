@@ -1,10 +1,10 @@
 import { DateTime } from "luxon";
 import { useContext } from "react";
 import styled from "styled-components";
-import { MINUTE_TO_PIXEL } from "../../constants";
+import { MINUTE_TO_PIXEL_RATIO } from "../../constants";
 import EventsContext from "../../contexts/EventsContext/EventsContext";
 import SelectedTimeContext from "../../contexts/SelectedTimeContext";
-import isIntervalFree from "../../utils/isIntervalFree";
+import { calculateLeftValue, calculateWidthValue, isIntervalFree } from "../../utils";
 
 interface RootProps {
   left: number;
@@ -32,8 +32,8 @@ interface SelectedTimeProps {
 const SelectedTime: React.FC<SelectedTimeProps> = ({ timeLineStart }) => {
   const eventsContext = useContext(EventsContext);
   const selectedTimeContext = useContext(SelectedTimeContext);
-  const left = selectedTimeContext.start.diff(timeLineStart).as("minutes") * MINUTE_TO_PIXEL;
-  const width = selectedTimeContext.end.diff(selectedTimeContext.start).as("minutes") * MINUTE_TO_PIXEL;
+  const left = calculateLeftValue(timeLineStart, selectedTimeContext.start);
+  const width = calculateWidthValue(selectedTimeContext.start, selectedTimeContext.end);
   const free = isIntervalFree(eventsContext.events, selectedTimeContext.start, selectedTimeContext.end);
   
   return (

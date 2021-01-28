@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { generateEvents } from "../../generator";
+import fetchEvents from "../../api/fetchEvents";
 import { TimeEvent } from "../../types/TimeEvent";
 import EventsContext, { EventsContextValue } from "./EventsContext";
 
@@ -20,10 +20,10 @@ const EventsContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      setAllEvents(generateEvents())
+    fetchEvents().then(events => {
+      setAllEvents(events.data)
       setLoading(false);
-    }, 500)
+    })   
   }, []);
 
 

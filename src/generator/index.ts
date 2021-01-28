@@ -1,10 +1,12 @@
 import { TimeEvent } from "../types/TimeEvent";
-import { guid, minToMs, randomInteger, roundDate } from "../utils";
 import names from "./constants/names";
+import generateGuid from "./utils/generateGuid";
+import randomInt from "./utils/randomInt";
+import { minToMs, roundDate } from "./utils/time";
 
 export function getRandomEvent(lastEnd: Date) {
-  const offset = minToMs(randomInteger(0, 300));
-  const duration = minToMs(randomInteger(45, 300));
+  const offset = minToMs(randomInt(0, 300));
+  const duration = minToMs(randomInt(45, 300));
 
   const startTime = lastEnd.getTime() + offset;
   const endTime = startTime + duration;
@@ -15,8 +17,8 @@ export function getRandomEvent(lastEnd: Date) {
   return {
     start,
     end,
-    id: guid(),
-    name: names[randomInteger(0, names.length - 1)]
+    id: generateGuid(),
+    name: names[randomInt(0, names.length - 1)]
   }
 }
 

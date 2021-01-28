@@ -1,27 +1,29 @@
-export function minToMs(mins: number) {
-  return mins * 60 * 1000;
+import { MINUTE_TO_PIXEL_RATIO } from "../constants";
+import { DateTime } from "luxon";
+import { TimeEvent } from "../types/TimeEvent";
+
+export function calculateLeftValue(timeLineStart: DateTime, selectedStart: DateTime) {
+    return selectedStart.diff(timeLineStart).as("minutes") * MINUTE_TO_PIXEL_RATIO
 }
 
-export function msToMin(ms: number) {
-  return ms / 1000 / 60;
+export function calculateWidthValue(selectedStart: DateTime, selectedEnd: DateTime) {
+    return selectedEnd.diff(selectedStart).as("minutes") * MINUTE_TO_PIXEL_RATIO;
 }
 
-export function randomInteger(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+export function isIntervalFree(events: TimeEvent[], intervalStart: DateTime, intervalEnd: DateTime): boolean {
+  for(let event of events) {
+    const start = intervalStart.toMillis();
+    const end = intervalEnd.toMillis();
 
-export const guid = (): string => {
-	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-		const r = (Math.random() * 16) | 0;
-		const v = c === "x" ? r : (r & 0x3) | 0x8;
+    const eventStart = DateTime.fromISO(event.start).toMillis();
+    const eventEnd = DateTime.fromISO(event.end).toMillis();
 
-		return v.toString(16);
-	});
-};
+    if(eventStart < start && eventEnd > end) return false;
+    if(eventStart >= start && eventStart <= end) return false;
+    if(eventEnd <= end && eventEnd > start) return false;
 
-export const roundDate = (date: Date) => {
-  const mins = date.getTime() / 1000 / 60;
-  const roundedMins = Math.round(mins / 15) * 15;
+    if(eventEnd > end) return true;
+  }
 
-  return new Date(roundedMins * 60 * 1000);
+  return true;
 }
