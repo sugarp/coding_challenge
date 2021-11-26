@@ -16,12 +16,12 @@ const EventsContextProvider: React.FC = ({ children }) => {
     organizers,
     events: nameFilter ? allEvents.filter(event => event.name === nameFilter) : allEvents,
     filterEventsByName: setNameFilter,
-  }), [allEvents, nameFilter, loading, setNameFilter]);
+  }), [loading, organizers, nameFilter, allEvents]);
 
   useEffect(() => {
     setLoading(true);
     fetchEvents().then(events => {
-      setAllEvents(events.data)
+      setAllEvents(events)
       setLoading(false);
     })   
   }, []);
